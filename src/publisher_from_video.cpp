@@ -34,10 +34,7 @@ int main(int argc, char ** argv)
 
   // Check if video source has been passed as a parameter
   if (argv[1] == NULL) {return 1;}
-  //std::string param_path = argv[2];
   std::ifstream param(argv[2]);
-
-  //cameraMatrix = (cv::Mat1d(3, 3) << 166.0917851807707, 0, 153.1842438002411, 0., 168.1453750396955, 99.501620234996140, 0., 0., 1.);
 
   for(int i = 0; i < 9; i++) param >> camera_matrix[i];
   for(int i = 0; i < 5; i++) param >> dist_coeffs[i]; 
@@ -45,8 +42,6 @@ int main(int argc, char ** argv)
   cv::Mat cameraMatrix= cv::Mat(3, 3, CV_64FC1, camera_matrix);
   cv::Mat newCameraMatrix= cv::Mat(3, 3, CV_64FC1, new_camera_matrix);
   cv::Mat distCoeffs = cv::Mat(1, 5, CV_64FC1, dist_coeffs);
-  //distCoeffs=(cv::Mat1d(1, 5) << -0.301297341361392, 0.057655095534194, 0.,0.,0.);
-  //newCameraMatrix =(cv::Mat1d(3, 3) << 106.29722595, 0., 157.40584801, 0., 149.60151672, 101.36317909, 0., 0., 1.);
 
 
   cv::Mat map1, map2;
@@ -68,6 +63,9 @@ int main(int argc, char ** argv)
   cv::initUndistortRectifyMap(cameraMatrix, distCoeffs, cv::Mat(), newCameraMatrix, out_size, CV_32FC1, map1, map2);
   cap.set(cv::CAP_PROP_FRAME_WIDTH, static_cast<int>(320));
   cap.set(cv::CAP_PROP_FRAME_HEIGHT, static_cast<int>(240));
+  // cap.set(cv::CAP_PROP_AUTO_WB, 0);
+  // cap.set(cv::CAP_PROP_TEMPERATURE, 10000); 
+
   // Check if video device can be opened with the given index
   if (!cap.isOpened()) {return 1;}
   cv::Mat frame;
