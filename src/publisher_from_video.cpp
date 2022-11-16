@@ -22,6 +22,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/calib3d.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp/qos.hpp"
 #include <string>
 
 
@@ -45,12 +46,13 @@ int main(int argc, char ** argv)
 
 
   cv::Mat map1, map2;
-
+  //static const rmw_qos_profile_t qos = rmw_qos_profile_sensor_data;
   rclcpp::init(argc, argv);
   rclcpp::NodeOptions options;
   rclcpp::Node::SharedPtr node = rclcpp::Node::make_shared("image_publisher", options);
   image_transport::ImageTransport it(node);
-  image_transport::Publisher pub = it.advertise("image", 1);
+  // image_transport::Publisher pub = it.advertise("image", 1);
+  image_transport::Publisher pub = image_transport::create_publisher(node.get(), "image", rmw_qos_profile_sensor_data);
 
   // Convert the command line parameter index for the video device to an integer
   // std::istringstream video_sourceCmd(argv[1]);
@@ -73,7 +75,7 @@ int main(int argc, char ** argv)
   std_msgs::msg::Header hdr;
   sensor_msgs::msg::Image::SharedPtr msg;
 
-  rclcpp::WallRate loop_rate(30);
+  rclcpp::WallRate loop_rate(20);
   while (rclcpp::ok()) {
     cap >> frame;
     // Check if grabbed frame is actually full with some content
